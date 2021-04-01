@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -e
+
+loopdev=`sudo losetup --partscan --find --show $1`
+
+sudo mkdir -p /mnt/STBOOT
+sudo mkdir -p /mnt/STDATA
+
+sudo mount ${loopdev}p1 /mnt/STBOOT
+sudo mount ${loopdev}p2 /mnt/STDATA
+
+echo STBOOT
+find /mnt/STBOOT
+echo --
+echo STDATA
+find /mnt/STDATA
+echo --
+
+sudo umount /mnt/STBOOT
+sudo umount /mnt/STDATA
+sudo losetup -d ${loopdev}

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -ex
+
+git clean -ffdx
+make toolchain
+make keygen-sign

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -ex
+
+git clean -ffdx
+make config
+sed -i 's/ST_OS_PKG_TBOOT=.*/ST_OS_PKG_TBOOT=""/' .config
+sed -i 's/ST_OS_PKG_ACM=.*/ST_OS_PKG_ACM=""/' .config
+sed -i 's|ST_PROVISIONING_SERVER_URL=.*|ST_PROVISIONING_SERVER_URL=("http://10.0.2.200/os-latest.json")|' .config
+sed -i 's/ST_BOOT_MODE=local/ST_BOOT_MODE=network/' .config
+make toolchain
+make keygen-cpu
+
+# TOOD Ugly workaround not to build the os
+mkdir -p out/os-packages
+touch out/os-packages/boot_order
+
+make mbr-bootloader-installation
+

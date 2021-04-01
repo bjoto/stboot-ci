@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -ex
+
+git clean -ffdx
+make config
+sed -i 's/ST_OS_PKG_TBOOT=.*/ST_OS_PKG_TBOOT=""/' .config
+sed -i 's/ST_OS_PKG_ACM=.*/ST_OS_PKG_ACM=""/' .config
+sed -i 's|ST_OS_PKG_KERNEL="out/operating-system/ubuntu-bionic-amd64.vmlinuz"|ST_OS_PKG_KERNEL="out/operating-system/ubuntu-focal-amd64.vmlinuz"|' .config
+sed -i 's|ST_OS_PKG_INITRAMFS="out/operating-system/ubuntu-bionic-amd64.cpio.gz"|ST_OS_PKG_INITRAMFS="out/operating-system/ubuntu-focal-amd64.cpio.gz"|' .config
+make toolchain
+make keygen
+make mbr-bootloader-installation
+
