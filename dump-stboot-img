@@ -2,6 +2,28 @@
 
 set -e
 
+interactive=0
+
+while true; do
+    if [ $# -eq 0 ]; then
+	echo $#
+	break
+    fi
+    case "$1" in
+	-s | --stop-after-mount)
+	    interactive=1
+	    shift 1
+	    ;;
+	-*)
+	    echo "Error: Unknown option $1" >&2
+	    exit 1
+	    ;;
+	*)
+	    break
+	    ;;
+    esac
+done
+
 loopdev=`sudo losetup --partscan --find --show $1`
 
 sudo mkdir -p /mnt/STBOOT
@@ -11,11 +33,16 @@ sudo mount ${loopdev}p1 /mnt/STBOOT
 sudo mount ${loopdev}p2 /mnt/STDATA
 
 echo STBOOT
-find /mnt/STBOOT
+find /mnt/STBOOT || true
 echo --
 echo STDATA
-find /mnt/STDATA
+find /mnt/STDATA || true
 echo --
+
+if [ $interactive -eq 1 ]; then
+    echo "mounted at /mnt/STBOOT /mnt/STDATA"
+    bash -c 'cd /mnt/; exec bash'
+fi
 
 sudo umount /mnt/STBOOT
 sudo umount /mnt/STDATA
