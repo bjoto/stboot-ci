@@ -5,3 +5,5 @@ set -ex
 git clean -ffdx
 make toolchain
 make keygen-sign
+rm -rf /var/www/html/artifacts/signing_keys
+cp -r out/keys/signing_keys /var/www/html/artifacts
