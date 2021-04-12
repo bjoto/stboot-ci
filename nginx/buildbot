@@ -34,7 +34,9 @@ server {
 	}
 	location /artifacts {
 		 try_files $uri $uri/ =404;
-		 autoindex on;
+		 fancyindex on;
+		 fancyindex_exact_size off;
+		 fancyindex_name_length 255;
 	}
 
 }
