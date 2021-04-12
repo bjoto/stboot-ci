@@ -39,6 +39,6 @@ chmod 644 ${dir}/keys/*
 
 mkdir -p ${dir}/attic
 cp -R out/* ${dir}/attic
-cp .config ${dir}/attic
+cp .config ${dir}/attic/config
 
 echo "Build done! Artifacts in $(basename ${dir})."

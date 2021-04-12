@@ -9,6 +9,32 @@ sed -i 's/ST_OS_PKG_ACM=.*/ST_OS_PKG_ACM=""/' .config
 sed -i 's|ST_OS_PKG_KERNEL="out/operating-system/ubuntu-bionic-amd64.vmlinuz"|ST_OS_PKG_KERNEL="out/operating-system/ubuntu-focal-amd64.vmlinuz"|' .config
 sed -i 's|ST_OS_PKG_INITRAMFS="out/operating-system/ubuntu-bionic-amd64.cpio.gz"|ST_OS_PKG_INITRAMFS="out/operating-system/ubuntu-focal-amd64.cpio.gz"|' .config
 make toolchain
-make keygen-sign
+
+# Fetch the signing keys
+mkdir -p out/keys
+cp -R /var/www/html/artifacts/signing_keys out/keys
+
 make example-os-package
+
+# Populate artifacts directory
+cid=`git log -1 --abbrev=12 --pretty=format:"%h" 2>/dev/null`
+ts=`date +%Y%m%d-%H%M%S`
+dir=`mktemp -d /var/www/html/artifacts/os-pkg-ubuntu-20_${ts}_XXX-g${cid}`
+
+chmod 775 ${dir}
+
+ospkgzip=`basename $(ls out/os-packages/*.zip)`
+ospkgjson=`basename $(ls out/os-packages/*.json)`
+
+mv out/os-packages/*.json ${dir}
+mv out/os-packages/*.zip ${dir}
+
+sed -i "s|\"os_pkg_url\": \"\",|\"os_pkg_url\": \"https://185.213.154.92/artifacts/$(basename ${dir})/${ospkgzip}\",|" ${dir}/${ospkgjson}
+
+mkdir -p ${dir}/attic
+cp -R out/* ${dir}/attic
+cp .config ${dir}/attic/config
+ln -sf ${dir}/${ospkgjson} /var/www/html/artifacts/os-latest.json
+
+echo "Build done! Artifacts in $(basename ${dir})."
 
