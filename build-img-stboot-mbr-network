@@ -41,7 +41,7 @@ mkdir -p ${dir}/attic
 cp -R out/* ${dir}/attic
 cp .config ${dir}/attic/config
 
-find ${dir} -type d -exec chmod +rx {} \;
-find ${dir} -type f -exec chmod +r {} \;
+find ${dir} -type d -exec chmod a+rx {} \;
+find ${dir} -type f -exec chmod a+r {} \;
 
 echo "Build done! Artifacts in $(basename ${dir})."
