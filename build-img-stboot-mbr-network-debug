@@ -13,6 +13,12 @@ sed -i 's/ST_BOOT_MODE=local/ST_BOOT_MODE=network/' .config
 sed -i 's/ST_LINUXBOOT_VARIANT=minimal/ST_LINUXBOOT_VARIANT=debug/' .config
 make toolchain
 
+# Ugly patch, remove later/upstreamed
+fix=${PWD}/../ci/u-root-stboot-insecure-patch.diff
+pushd ./cache/go/src/github.com/u-root/u-root/
+git apply ${fix}
+popd
+
 # Fetch the signing keys
 mkdir -p out/keys
 cp -R /var/www/html/artifacts/signing_keys out/keys
