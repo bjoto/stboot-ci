@@ -2,6 +2,8 @@
 
 set -ex
 
+httpscred=`cat /var/www/html/secret`
+
 git clean -ffdx
 make config
 sed -i 's/ST_OS_PKG_TBOOT=.*/ST_OS_PKG_TBOOT=""/' .config
@@ -29,7 +31,7 @@ ospkgjson=`basename $(ls out/os-packages/*.json)`
 mv out/os-packages/*.json ${dir}
 mv out/os-packages/*.zip ${dir}
 
-sed -i "s|\"os_pkg_url\": \"\",|\"os_pkg_url\": \"https://185.213.154.92/artifacts/$(basename ${dir})/${ospkgzip}\",|" ${dir}/${ospkgjson}
+sed -i "s|\"os_pkg_url\": \"\",|\"os_pkg_url\": \"https://${httpscred}@185.213.154.92/artifacts/$(basename ${dir})/${ospkgzip}\",|" ${dir}/${ospkgjson}
 
 mkdir -p ${dir}/attic
 cp -R out/* ${dir}/attic

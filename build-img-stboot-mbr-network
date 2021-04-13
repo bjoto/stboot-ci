@@ -2,11 +2,13 @@
 
 set -ex
 
+httpscred=`cat /var/www/html/secret`
+
 git clean -ffdx
 make config
 sed -i 's/ST_OS_PKG_TBOOT=.*/ST_OS_PKG_TBOOT=""/' .config
 sed -i 's/ST_OS_PKG_ACM=.*/ST_OS_PKG_ACM=""/' .config
-sed -i 's|ST_PROVISIONING_SERVER_URL=.*|ST_PROVISIONING_SERVER_URL=("https://185.213.154.92/artifacts/os-latest.json")|' .config
+sed -i "s|ST_PROVISIONING_SERVER_URL=.*|ST_PROVISIONING_SERVER_URL=(\"https://${httpscred}@185.213.154.92/artifacts/os-latest.json\")|" .config
 sed -i 's/ST_BOOT_MODE=local/ST_BOOT_MODE=network/' .config
 make toolchain
 
