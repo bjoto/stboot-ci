@@ -10,24 +10,14 @@ sed -i 's/ST_OS_PKG_TBOOT=.*/ST_OS_PKG_TBOOT=""/' .config
 sed -i 's/ST_OS_PKG_ACM=.*/ST_OS_PKG_ACM=""/' .config
 sed -i "s|ST_PROVISIONING_SERVER_URL=.*|ST_PROVISIONING_SERVER_URL=(\"https://${httpscred}@185.213.154.92/artifacts/os-latest.json\")|" .config
 sed -i 's/ST_BOOT_MODE=local/ST_BOOT_MODE=network/' .config
+sed -i "s|ST_LINUXBOOT_CMDLINE=\"console=ttyS0,115200 uroot.uinitargs='-debug'\"|ST_LINUXBOOT_CMDLINE=\"console=ttyS0,115200 uroot.uinitargs='-debug -tlsSkipVerify'\"|" .config
 make toolchain
-
-# Ugly patch, remove later/upstreamed
-fix=${PWD}/../ci/u-root-stboot-insecure-patch.diff
-pushd ./cache/go/src/github.com/u-root/u-root/
-git apply ${fix}
-popd
 
 # Fetch the signing keys
 mkdir -p out/keys
 cp -R /var/www/html/artifacts/signing_keys out/keys
 
 make keygen-cpu
-
-# TOOD Ugly workaround not to build the os
-mkdir -p out/os-packages
-touch out/os-packages/boot_order
-
 make mbr-bootloader-installation
 
 # Populate artifacts directory
