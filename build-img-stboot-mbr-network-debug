@@ -10,7 +10,7 @@ sed -i 's/ST_OS_PKG_TBOOT=.*/ST_OS_PKG_TBOOT=""/' .config
 sed -i 's/ST_OS_PKG_ACM=.*/ST_OS_PKG_ACM=""/' .config
 sed -i "s|ST_PROVISIONING_SERVER_URL=.*|ST_PROVISIONING_SERVER_URL=(\"https://${httpscred}@185.213.154.92/artifacts/os-latest.json\")|" .config
 sed -i 's/ST_BOOT_MODE=local/ST_BOOT_MODE=network/' .config
-sed -i "s|ST_LINUXBOOT_CMDLINE=\"console=ttyS0,115200 uroot.uinitargs='-debug'\"|ST_LINUXBOOT_CMDLINE=\"console=ttyS0,115200 uroot.uinitargs='-debug -tlsskipverify'\"|" .config
+sed -i "s|ST_LINUXBOOT_CMDLINE=\"console=ttyS0,115200 uroot.uinitargs=\\\\\"-debug\\\\\"\"|ST_LINUXBOOT_CMDLINE=\"console=ttyS0,115200 uroot.uinitargs=\\\\\"-debug -tlsskipverify\\\\\"\"|" .config
 sed -i 's/ST_LINUXBOOT_VARIANT=minimal/ST_LINUXBOOT_VARIANT=debug/' .config
 make toolchain
 
